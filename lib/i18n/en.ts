@@ -39,7 +39,7 @@ export const en = {
     byline: 'Frontend Developer — Egypt / Remote',
     headline: { before: 'Building large products end to end — from the ', accent: 'API layer', after: ' to the final UI.' },
     intro:
-      'Frontend developer with 3+ years in React, Next.js and TypeScript — often the only frontend developer on the project. I write code that stays easy to work with as a product grows, and I get Arabic/RTL right, not just translated.',
+      'Frontend developer with 3+ years in React, Next.js and TypeScript. I write code that stays easy to work with as a product grows, and I get Arabic/RTL right, not just translated.',
     focus: ['Next.js 16 / React 19', 'TypeScript', 'RTK Query', 'Arabic · RTL · i18n'],
     cta: { work: 'Explore selected work', contact: 'Get in touch', cv: 'Download CV' },
     stats: [
@@ -62,7 +62,7 @@ export const en = {
     eyebrow: 'Index // Case studies',
     title: 'Selected work & production systems',
     intro:
-      'Marketplaces, multi-tenant SaaS and bilingual storefronts — built end to end, often as the only frontend developer. Open any card for the architecture notes.',
+      'Marketplaces, multi-tenant SaaS and bilingual storefronts — built end to end. Open any card for the architecture notes.',
     caseNotes: 'Case notes',
     dialog: {
       close: 'Close case notes',
@@ -174,6 +174,21 @@ export const en = {
         'Designed a weekly timetable grid with a custom lane-assignment algorithm to render overlapping class sessions per room without collisions, and shipped full Arabic/English i18n with RTL support.',
       ],
     },
+    {
+      name: 'AUQ',
+      subtitle: 'Professional Training Platform',
+      category: 'EdTech · Freelance',
+      scope: 'Lighthouse 90+ · Responsive',
+      summary:
+        'Corporate site and training platform for Advanced Universal Quality — courses, certifications and programs for organizations, scoring 90+ on Lighthouse.',
+      description:
+        'Website for Advanced Universal Quality (auq.net), a professional training provider presenting its courses, certification programs and offers for organizations — built to be fast, accessible and fully responsive.',
+      highlights: [
+        'Delivered a corporate website scoring 90+ on Lighthouse, with strong accessibility and mobile support.',
+        'Built fully responsive, cross-browser layouts for the training catalog, from the course pages down to the phone experience.',
+        'Kept the codebase clean and scalable on Next.js, React, TypeScript, Redux Toolkit and Tailwind CSS.',
+      ],
+    },
   ],
   experience: {
     eyebrow: 'Career // 2023 — Now',
@@ -260,7 +275,7 @@ export const en = {
     eyebrow: 'Approach // 001',
     title: 'Code that stays easy to work with as the product grows.',
     intro:
-      'Most of my work lands on large products where I’m the only frontend developer — so the architecture has to carry the product long after launch. A few habits do most of the work:',
+      'Most of my work lands on large products — so the architecture has to carry the product long after launch. A few habits do most of the work:',
     principles: [
       {
         title: 'Atomic, feature-based structure',

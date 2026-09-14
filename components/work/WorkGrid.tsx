@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { useSite } from '@/components/site/SiteProvider';
@@ -7,6 +8,7 @@ import { Icon } from '@/components/ui/Icon';
 import { Reveal } from '@/components/ui/Reveal';
 import { PROJECT_META } from '@/lib/content';
 import { formatNumber, type Dictionary, type Locale } from '@/lib/i18n';
+import { cx } from '@/lib/utils';
 import { ProjectCover } from './ProjectCover';
 
 type WorkGridProps = { locale: Locale; t: Dictionary['work']; projects: Dictionary['projects'] };
@@ -22,6 +24,8 @@ export function WorkGrid({ locale, t, projects }: WorkGridProps) {
   // "Next" follows the reading direction.
   const nextKey = locale === 'ar' ? 'ArrowLeft' : 'ArrowRight';
   const prevKey = locale === 'ar' ? 'ArrowRight' : 'ArrowLeft';
+  // An odd last card spans both columns on desktop (image beside text) instead of leaving a hole.
+  const isWide = (i: number) => items.length % 2 === 1 && i === items.length - 1;
 
   const show = (i: number) => {
     // Commit the new content before the sheet opens so it never flashes the previous case.
@@ -57,26 +61,50 @@ export function WorkGrid({ locale, t, projects }: WorkGridProps) {
     <>
       <ul className="grid grid-cols-1 gap-space-xl lg:grid-cols-2">
         {items.map((p, i) => (
-          <li key={p.index}>
+          <li key={p.index} className={cx(isWide(i) && 'lg:col-span-2')}>
             <Reveal delay={(i % 2) * 90} className="h-full">
-              <article className="group relative flex h-full flex-col border border-ink-line bg-ink-soft transition-[translate,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-copper has-[button:focus-visible]:border-copper has-[button:focus-visible]:outline-2 has-[button:focus-visible]:outline-offset-4 has-[button:focus-visible]:outline-glow">
-                <div className="bg-hairline-grid relative aspect-[16/10] overflow-hidden">
-                  <ProjectCover
-                    motif={p.motif}
-                    index={p.index}
-                    className="cover-drift absolute inset-0 size-full transition-[scale] duration-700 ease-out group-hover:scale-[1.03]"
-                  />
-                  <span className="absolute top-space-md inset-s-space-md bg-ink/80 px-space-sm py-0.5 font-mono text-code-inline uppercase text-sand backdrop-blur">
-                    {`${p.index} // ${p.category}`}
-                  </span>
+              <article
+                className={cx(
+                  'group relative flex h-full flex-col border border-ink-line bg-ink-soft transition-[translate,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-copper has-[button:focus-visible]:border-copper has-[button:focus-visible]:outline-2 has-[button:focus-visible]:outline-offset-4 has-[button:focus-visible]:outline-glow',
+                  isWide(i) && 'lg:flex-row',
+                )}
+              >
+                <div className={cx('bg-hairline-grid relative aspect-[3/2] overflow-hidden', isWide(i) && 'lg:w-3/5 lg:shrink-0')}>
+                  {p.image ? (
+                    <>
+                      <Image
+                        src={p.image}
+                        alt={`${p.name} — ${p.subtitle}`}
+                        fill
+                        sizes="(min-width: 1280px) 36rem, (min-width: 1024px) 45vw, 100vw"
+                        placeholder="blur"
+                        className="cover-drift-soft object-cover transition-[scale] duration-700 ease-out group-hover:scale-[1.03]"
+                      />
+                      {/* Ink fade at the foot, so the Case-notes cue reads on any thumbnail. */}
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 bg-linear-to-t from-ink/55 via-ink/0 to-ink/0"
+                      />
+                    </>
+                  ) : (
+                    <ProjectCover
+                      motif={p.motif}
+                      index={p.index}
+                      className="cover-drift absolute inset-0 size-full transition-[scale] duration-700 ease-out group-hover:scale-[1.03]"
+                    />
+                  )}
+                  {/* Always visible on touch screens; revealed on hover or keyboard focus on desktop. */}
                   <span
                     aria-hidden="true"
-                    className="absolute inset-e-space-md bottom-space-md flex items-center gap-1 rounded-full bg-copper px-space-md py-1 font-mono text-label-sm uppercase text-paper"
+                    className="absolute inset-e-space-md bottom-space-md flex items-center gap-1 rounded-full bg-copper px-space-md py-1 font-mono text-label-sm uppercase text-paper transition-[opacity,translate] duration-300 lg:translate-y-1 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:group-has-[button:focus-visible]:translate-y-0 lg:group-has-[button:focus-visible]:opacity-100"
                   >
                     {t.caseNotes} <Icon name="arrow-up-right" size={14} />
                   </span>
                 </div>
-                <div className="flex flex-1 flex-col gap-space-md p-space-lg">
+                <div className={cx('flex flex-1 flex-col gap-space-md p-space-lg', isWide(i) && 'lg:justify-center')}>
+                  <span className="-mb-space-sm font-mono text-label-sm uppercase tracking-widest text-sand">
+                    {`${p.index} // ${p.category}`}
+                  </span>
                   <div className="flex flex-wrap items-baseline justify-between gap-x-space-md gap-y-1">
                     <h3 className="font-display text-headline-sm text-canvas transition-colors group-hover:text-blush">
                       <button
@@ -145,9 +173,22 @@ export function WorkGrid({ locale, t, projects }: WorkGridProps) {
             </div>
           </header>
 
-          <div className="bg-hairline-grid relative aspect-[2/1] overflow-hidden bg-ink-soft md:aspect-[5/2]">
-            <ProjectCover motif={project.motif} index={project.index} fit="meet" className="absolute inset-0 size-full" />
-          </div>
+          {project.image ? (
+            <div className="relative aspect-[3/2] overflow-hidden bg-ink-soft">
+              <Image
+                src={project.image}
+                alt={`${project.name} — ${project.subtitle}`}
+                fill
+                sizes="(min-width: 1024px) 60rem, 100vw"
+                placeholder="blur"
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <div className="bg-hairline-grid relative aspect-[2/1] overflow-hidden bg-ink-soft md:aspect-[5/2]">
+              <ProjectCover motif={project.motif} index={project.index} fit="meet" className="absolute inset-0 size-full" />
+            </div>
+          )}
 
           <div className="grid gap-space-xl px-space-md py-space-xl md:grid-cols-12 md:px-space-lg">
             <div className="flex flex-col gap-space-md md:col-span-5">

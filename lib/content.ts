@@ -1,3 +1,12 @@
+import type { StaticImageData } from 'next/image';
+import auqThumb from '@/assets/projects/auq.webp';
+import centrixThumb from '@/assets/projects/centrix.webp';
+import chinapartsThumb from '@/assets/projects/chinaparts.webp';
+import ciropayThumb from '@/assets/projects/ciropay.webp';
+import petrobeThumb from '@/assets/projects/petrobe.webp';
+import sellerThumb from '@/assets/projects/seller.webp';
+import wesadaThumb from '@/assets/projects/wesada.webp';
+
 /**
  * Language-independent data. Every visible sentence lives in the dictionaries
  * (lib/i18n/en.ts, lib/i18n/ar.ts); this file holds links, ids and tech names.
@@ -19,14 +28,30 @@ export type NavId = (typeof NAV_IDS)[number];
 
 export type Motif = 'storefront' | 'dashboard' | 'tenants' | 'devportal' | 'rtl' | 'timetable';
 
-/** Same order as `projects` in each dictionary. */
-export const PROJECT_META: { motif: Motif; stack: string[] }[] = [
-  { motif: 'storefront', stack: ['Next.js 16', 'React 19', 'TypeScript', 'RTK Query', 'Tailwind CSS 4', 'Firebase'] },
-  { motif: 'dashboard', stack: ['Next.js 16', 'React 19', 'TypeScript', 'RTK Query', 'Tailwind CSS 4', 'Recharts', 'Firebase'] },
-  { motif: 'tenants', stack: ['Next.js 16', 'React 19', 'TypeScript', 'RTK Query', 'Tailwind CSS 4'] },
-  { motif: 'devportal', stack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'Framer Motion'] },
-  { motif: 'rtl', stack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'RTK Query'] },
-  { motif: 'timetable', stack: ['Next.js 16', 'React 19', 'TypeScript', 'RTK Query', 'Tailwind CSS 4', 'i18next'] },
+/**
+ * Same order as `projects` in each dictionary. `image` is the project thumbnail;
+ * without one, the card falls back to the drawn `motif` cover.
+ */
+export const PROJECT_META: { motif: Motif; stack: string[]; image?: StaticImageData }[] = [
+  {
+    motif: 'storefront',
+    stack: ['Next.js 16', 'React 19', 'TypeScript', 'RTK Query', 'Tailwind CSS 4', 'Firebase'],
+    image: chinapartsThumb,
+  },
+  {
+    motif: 'dashboard',
+    stack: ['Next.js 16', 'React 19', 'TypeScript', 'RTK Query', 'Tailwind CSS 4', 'Recharts', 'Firebase'],
+    image: sellerThumb,
+  },
+  { motif: 'tenants', stack: ['Next.js 16', 'React 19', 'TypeScript', 'RTK Query', 'Tailwind CSS 4'], image: petrobeThumb },
+  { motif: 'devportal', stack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'Framer Motion'], image: ciropayThumb },
+  { motif: 'rtl', stack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'RTK Query'], image: wesadaThumb },
+  {
+    motif: 'timetable',
+    stack: ['Next.js 16', 'React 19', 'TypeScript', 'RTK Query', 'Tailwind CSS 4', 'i18next'],
+    image: centrixThumb,
+  },
+  { motif: 'devportal', stack: ['Next.js', 'React', 'TypeScript', 'Redux Toolkit', 'Tailwind CSS'], image: auqThumb },
 ];
 
 /**

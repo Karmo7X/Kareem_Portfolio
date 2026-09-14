@@ -285,7 +285,8 @@ type CoverProps = {
 export function ProjectCover({ motif, index, fit = 'slice', className }: CoverProps) {
   const mirrored = motif === 'rtl';
   return (
-    <svg viewBox="0 0 400 250" preserveAspectRatio={`xMidYMid ${fit}`} className={className} aria-hidden="true">
+    // direction="ltr": the drawings are fixed artwork — on the Arabic site, inherited RTL would flip every text anchor.
+    <svg viewBox="0 0 400 250" preserveAspectRatio={`xMidYMid ${fit}`} direction="ltr" className={className} aria-hidden="true">
       <text
         x={mirrored ? 408 : -8}
         y="262"
