@@ -1,8 +1,11 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
+  experimental: {
+    // Two root layouts (English + Arabic) → app/global-not-found.tsx serves unmatched URLs.
+    globalNotFound: true,
+  },
 };
 
 export default nextConfig;

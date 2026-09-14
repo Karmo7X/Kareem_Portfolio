@@ -1,26 +1,378 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Font stacks point at the next/font variables each root layout sets on <html>.
+   Not `inline`, so the Arabic site can reorder them below. */
+@theme {
+  --font-display: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Arabic site: Arabic faces first. They only cover Arabic glyphs, so Latin words still
+   fall through to Syne / Inter / JetBrains Mono (see app/fonts-arabic.ts). */
+html:lang(ar) {
+  --font-display: var(--font-kufi), var(--font-syne), system-ui, sans-serif;
+  --font-sans: var(--font-noto-arabic), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-noto-arabic), var(--font-jetbrains), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* "Atelier Digital" design system — roles and scales from DESIGN.md. */
+@theme {
+  /* Paper & ink */
+  --color-canvas: #fbfbfa;
+  --color-panel: #f1f0ee;
+  --color-panel-deep: #e9e7e3;
+  --color-paper: #ffffff;
+  --color-line: #e5e3df;
+  --color-line-strong: #d3d0ca;
+  --color-ink: #0a0a0a;
+  --color-ink-soft: #141313;
+  --color-ink-raised: #1c1b1b;
+  --color-ink-line: #2d2b2a;
+  --color-graphite: #444748;
+  --color-muted: #6e6c68;
+  --color-ash: #9a9791;
+  --color-olive: #8f8c86;
+
+  /* Warm precision: copper for fills/borders, copper-ink for small text on paper */
+  --color-copper: #b15f2c;
+  --color-copper-ink: #954917;
+  --color-glow: #cf8047;
+  --color-sand: #ffb68e;
+  --color-blush: #ffdbca;
+  --color-alert: #ba1a1a;
+
+  /* Type scale */
+  --text-display-hero: 5.5rem;
+  --text-display-hero--line-height: 0.95;
+  --text-display-hero--letter-spacing: -0.04em;
+  --text-display-hero--font-weight: 800;
+  --text-display-hero-mobile: 3rem;
+  --text-display-hero-mobile--line-height: 1;
+  --text-display-hero-mobile--letter-spacing: -0.03em;
+  --text-display-hero-mobile--font-weight: 800;
+  --text-headline-xl: 3.75rem;
+  --text-headline-xl--line-height: 1.05;
+  --text-headline-xl--letter-spacing: -0.03em;
+  --text-headline-xl--font-weight: 700;
+  --text-headline-xl-mobile: 2.25rem;
+  --text-headline-xl-mobile--line-height: 1.1;
+  --text-headline-xl-mobile--letter-spacing: -0.02em;
+  --text-headline-xl-mobile--font-weight: 700;
+  --text-headline-lg: 2.5rem;
+  --text-headline-lg--line-height: 1.15;
+  --text-headline-lg--letter-spacing: -0.02em;
+  --text-headline-lg--font-weight: 600;
+  --text-headline-lg-mobile: 1.75rem;
+  --text-headline-lg-mobile--line-height: 1.2;
+  --text-headline-lg-mobile--letter-spacing: -0.01em;
+  --text-headline-lg-mobile--font-weight: 600;
+  --text-headline-sm: 1.35rem;
+  --text-headline-sm--line-height: 1.3;
+  --text-headline-sm--letter-spacing: -0.01em;
+  --text-headline-sm--font-weight: 600;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.65;
+  --text-body-lg--letter-spacing: -0.01em;
+  --text-body-md: 0.9375rem;
+  --text-body-md--line-height: 1.6;
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.5;
+  --text-label-md: 0.8125rem;
+  --text-label-md--line-height: 1.4;
+  --text-label-md--letter-spacing: 0.04em;
+  --text-label-md--font-weight: 500;
+  --text-label-sm: 0.6875rem;
+  --text-label-sm--line-height: 1.3;
+  --text-label-sm--letter-spacing: 0.06em;
+  --text-label-sm--font-weight: 500;
+  --text-code-inline: 0.875rem;
+  --text-code-inline--line-height: 1.5;
+
+  /* Spacing */
+  --spacing-gutter: 1.5rem;
+  --spacing-gutter-mobile: 1rem;
+  --spacing-margin: 3.5rem;
+  --spacing-margin-mobile: 1.25rem;
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.75rem;
+  --spacing-space-xl: 3rem;
+  --spacing-space-2xl: 5rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-glow: 0 20px 50px -15px rgb(177 95 44 / 0.12);
+}
+
+@layer base {
+  html {
+    background: var(--color-canvas);
+    color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-blush);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-glow);
+    outline-offset: 3px;
+  }
+  input,
+  textarea {
+    caret-color: var(--color-copper);
+  }
+  button:not(:disabled),
+  [role='button'] {
+    cursor: pointer;
+  }
+  [id] {
+    scroll-margin-top: 6rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Arabic script: tracking breaks letter joining, there are no true italics, and the
+   taller letterforms need more line height than Latin display type. Unlayered, so
+   these win over utilities like `tracking-widest` or `text-display-hero`. */
+:lang(ar) {
+  letter-spacing: 0;
+}
+:lang(ar) em {
+  font-style: normal;
+}
+:lang(ar) :is(h1, h2, h3, blockquote) {
+  line-height: 1.35;
+}
+:lang(ar) :is(p, li) {
+  line-height: 1.85;
+}
+
+/* Lenis smooth scroll (mirrors lenis/dist/lenis.css). */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Inline text link: underline grows 0% → 100% on hover. */
+@utility link-grow {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.45s var(--ease-out-expo), color 0.2s;
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+/* Faint architectural grid for dark media panels. */
+@utility bg-hairline-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero entrance runs from CSS alone, so it never waits on hydration. */
+  .rise {
+    animation: rise 0.9s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 60ms);
+  }
+}
+
+/* Scroll reveals: only hidden when JS can un-hide them (see components/ui/Reveal.tsx). */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    translate: 0 16px;
+    transition:
+      opacity 0.8s var(--ease-out-expo),
+      translate 0.9s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal][data-shown] {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+/* ── First-visit intro (components/site/IntroLoader.tsx) ─────────────────────────
+   Hidden unless the <head> script marked this visit; the drawing runs from CSS alone. */
+.intro {
+  display: none;
+}
+html[data-intro='play'] .intro,
+html[data-intro='leaving'] .intro {
+  display: block;
+}
+/* Hold the hero entrance until the curtain lifts; hide the logo the monogram lands on. */
+html[data-intro='play'] .rise {
+  animation-play-state: paused;
+}
+[data-intro-target] {
+  transition: opacity 0.3s ease;
+}
+html[data-intro='play'] [data-intro-target] {
+  opacity: 0;
+}
+
+@keyframes intro-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes intro-guide {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes intro-meta {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+.intro-guide {
+  transform-origin: top;
+  animation: intro-guide 1.1s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+.intro-meta {
+  animation: intro-meta 0.8s var(--ease-out-expo) 0.3s both;
+}
+.intro-box {
+  fill: var(--color-ink);
+  stroke: var(--color-glow);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: intro-draw 1.1s var(--ease-out-expo) 0.1s forwards;
+}
+.intro-stroke {
+  fill: none;
+  stroke: var(--color-canvas);
+  stroke-width: 8;
+  stroke-linejoin: miter;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: intro-draw 0.7s var(--ease-out-expo) forwards;
+  animation-delay: calc(0.3s + var(--i, 0) * 0.12s);
+}
+
+/* ── Scroll effects ──────────────────────────────────────────────────────────── */
+/* Manifesto words light up as the band scrolls through (components/fx/ScrollWords.tsx sets --p). */
+.scroll-word {
+  opacity: clamp(0.18, calc(var(--p, 1) * (var(--n, 1) + 2) - var(--i, 0)), 1);
+  transition: opacity 0.25s linear;
+}
+/* Project covers drift inside their frames as the cards pass through the viewport. */
+@keyframes cover-drift {
+  from {
+    transform: translateY(-5%) scale(1.1);
+  }
+  to {
+    transform: translateY(5%) scale(1.1);
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cover-drift {
+      animation: cover-drift linear both;
+      animation-timeline: view();
+    }
+  }
+}
+/* Scroll cue: a copper hairline that runs down and out. */
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+.scroll-cue {
+  animation: scroll-cue 2.4s var(--ease-out-expo) infinite;
+}
+
+/* Case-notes sheet: native <dialog> with discrete entry/exit transitions. */
+.case-sheet {
+  opacity: 0;
+  translate: 0 24px;
+  transition:
+    opacity 0.3s ease,
+    translate 0.5s var(--ease-out-expo),
+    overlay 0.3s allow-discrete,
+    display 0.3s allow-discrete;
+}
+.case-sheet[open] {
+  opacity: 1;
+  translate: none;
+}
+@starting-style {
+  .case-sheet[open] {
+    opacity: 0;
+    translate: 0 24px;
+  }
+}
+.case-sheet::backdrop {
+  background: rgb(10 10 10 / 0);
+  transition:
+    background 0.3s ease,
+    overlay 0.3s allow-discrete,
+    display 0.3s allow-discrete;
+}
+.case-sheet[open]::backdrop {
+  background: rgb(10 10 10 / 0.6);
+}
+@starting-style {
+  .case-sheet[open]::backdrop {
+    background: rgb(10 10 10 / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
